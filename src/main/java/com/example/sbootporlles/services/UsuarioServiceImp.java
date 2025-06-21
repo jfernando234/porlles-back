@@ -76,4 +76,9 @@ public class UsuarioServiceImp implements UsuarioService {
         // Buscar por correo electrónico (que es el campo que usamos como identificador)
         return usuarioRepo.findByCorreoElectronico(nombreUsuario);
     }
+
+    @Override
+    public Optional<UsuariosModels> obtenerPorCorreoElectronico(String correoElectronico) {
+        return usuarioRepo.findByCorreoElectronico(correoElectronico);
+    }
 }

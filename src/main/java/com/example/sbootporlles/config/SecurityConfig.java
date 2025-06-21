@@ -1,11 +1,12 @@
 package com.example.sbootporlles.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -14,10 +15,9 @@ import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    
+    @Autowired
+    private JWTAuthorizationFilter jwtAuthorizationFilter;
     
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -31,17 +31,30 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    
-    @Bean
+      @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        
+        return http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Permite acceso público a todos los endpoints de autenticación
-                .requestMatchers("/login/**").permitAll() // Permite acceso público a /login/**
-                .anyRequest().permitAll() // Temporal: permite todo durante el desarrollo
-            );
-        return http.build();
+                .requestMatchers("/api/auth/**").permitAll() // Permite acceso a auth endpoints
+                .anyRequest().authenticated() // Requiere autenticación para todo lo demás
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }    // Comentado temporalmente para evitar dependencia circular
+    // Se puede reactivar una vez que la aplicación esté funcionando
+    /*
+    @Bean
+    AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = 
+            http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder);
+        return authenticationManagerBuilder.build();
     }
+    */
 }
