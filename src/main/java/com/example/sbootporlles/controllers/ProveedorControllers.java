@@ -1,6 +1,8 @@
 package com.example.sbootporlles.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +32,12 @@ public class ProveedorControllers {
         return this.proveedorService.listarProveedores();
     }
     @PostMapping("/crear")
-    public ProveedorModel nuevoProveedor(@RequestBody ProveedorModel obj) {
-        System.out.println(obj.getNombre()+"::");
-        return this.proveedorService.crearProveedor(obj);
+    public Map<String, Object> nuevoProveedor(@RequestBody ProveedorModel obj) {
+        ProveedorModel guardado = this.proveedorService.crearProveedor(obj);
+        Map<String, Object> response = new HashMap<>();
+        response.put("isSuccess", true);
+        response.put("proveedor", guardado);
+        return response;
     }
     @PutMapping(path = "/{id}")
     public ProveedorModel actualizarProveedor(@RequestBody ProveedorModel request, @PathVariable("id") int id) {

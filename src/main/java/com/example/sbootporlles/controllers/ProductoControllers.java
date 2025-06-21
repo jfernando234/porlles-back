@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -35,11 +37,15 @@ public class ProductoControllers {
     }
 
     @PostMapping("/crear")
-    public ProductoModel crearProducto(
+    public Map<String, Object> crearProducto(
         @RequestPart("producto") ProductoModel producto,
         @RequestPart("imagen") MultipartFile imagen) throws IOException {
         producto.setImagen(imagen.getBytes());
-        return productoService.guardarProducto(producto);
+        ProductoModel guardado = productoService.guardarProducto(producto);
+        Map<String, Object> response = new HashMap<>();
+        response.put("isSuccess", true);
+        response.put("producto", guardado);
+        return response;
     }
 
     @PutMapping("/{id}")

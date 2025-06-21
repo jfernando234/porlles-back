@@ -13,8 +13,8 @@ public class RolesModels {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id") // Cambiar a 'id' que es más estándar
-    private Long id;
+    @Column(name = "idrol") // Cambiar a 'id' que es más estándar
+    private Long idrol;
     
     @Column(name = "nombre")
     private String nombre;
@@ -28,11 +28,11 @@ public class RolesModels {
     }
 
     public Long getId() {
-        return id;
+        return idrol;
     }
     
     public void setId(Long id) {
-        this.id = id;
+        this.idrol = id;
     }
     
     public String getNombre() {
@@ -46,7 +46,7 @@ public class RolesModels {
     @Override
     public String toString() {
         return "RolesModels{" +
-                "id=" + id +
+                "id=" + idrol +
                 ", nombre='" + nombre + '\'' +
                 '}';
     }
