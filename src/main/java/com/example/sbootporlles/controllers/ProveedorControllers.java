@@ -15,20 +15,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 
 @RestController
-@RequestMapping("/Proveedores")
+@RequestMapping("/proveedores")
 public class ProveedorControllers {
     @Autowired
     private ProveedorService proveedorService;
 
-    @GetMapping
+    @GetMapping ("/GetAll")
     public ArrayList<ProveedorModel> listarproveedor() {
         return this.proveedorService.listarProveedores();
     }
-    @GetMapping("/crear")
+    @PostMapping("/crear")
     public ProveedorModel nuevoProveedor(@RequestBody ProveedorModel obj) {
         System.out.println(obj.getNombre()+"::");
         return this.proveedorService.crearProveedor(obj);

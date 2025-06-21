@@ -32,10 +32,22 @@ public class ProductoModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProveedorModel ID_proveedor;
 
     @Column
     private int stockMinimo;
+    
+    @Column(name = "imagen", columnDefinition = "LONGBLOB")
+    private byte[] imagen;
+
+    public byte[] getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
+    }
 
     // Getters y setters
 
@@ -63,12 +75,12 @@ public class ProductoModel {
         this.marca = marca;
     }
 
-    public String getEspecificaciones() {
-        return especificaciones;
+    public ProveedorModel getID_proveedor() {
+        return ID_proveedor;
     }
 
-    public void setEspecificaciones(String especificaciones) {
-        this.especificaciones = especificaciones;
+    public void setID_proveedor(ProveedorModel iD_proveedor) {
+        ID_proveedor = iD_proveedor;
     }
 
     public double getPrecioUnitario() {
@@ -93,5 +105,13 @@ public class ProductoModel {
 
     public void setStockMinimo(int stockMinimo) {
         this.stockMinimo = stockMinimo;
+    }
+
+    public String getEspecificaciones() {
+        return especificaciones;
+    }
+
+    public void setEspecificaciones(String especificaciones) {
+        this.especificaciones = especificaciones;
     }
 }
