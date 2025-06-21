@@ -1,5 +1,6 @@
 package com.example.sbootporlles.models;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,23 +13,43 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "Usuarios")
-public class UsuariosModels {
-
-    @Id 
+public class UsuariosModels {    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
-    private String nombreUsuario;
+    private String nombre;
+    
     @Column
+    private String apellidos;
+    
+    @Column(name = "tipo_documento")
+    private String tipoDocumento;
+    
+    @Column(name = "numero_documento")
+    private String numeroDocumento;
+    
+    @Column(name = "correo_electronico")
+    private String correoElectronico;
+    
+    @Column
+    private String celular;
+      @Column
     private String contrasena;
+    
     @Column
-    private String correo;
+    private String rol;
+    
     @Column
     private Boolean habilitado;
+    
+    @Column(name = "fecha_registro")
+    private LocalDateTime fechaRegistro;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -36,9 +57,16 @@ public class UsuariosModels {
         joinColumns = @JoinColumn(name = "usuario_id"),
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
-    
-    private Set<RolesModels> roles = new HashSet<>();
-
+    private Set<RolesModels> roles = new HashSet<>();    @PrePersist
+    protected void onCreate() {
+        fechaRegistro = LocalDateTime.now();
+        if (rol == null || rol.trim().isEmpty()) {
+            rol = "CLIENTE";
+        }
+        if (habilitado == null) {
+            habilitado = true;
+        }
+    }// Getters y Setters en orden lógico
     public long getId() {
         return id;
     }
@@ -47,28 +75,66 @@ public class UsuariosModels {
         this.id = id;
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getNumeroDocumento() {
+        return numeroDocumento;
+    }
+
+    public void setNumeroDocumento(String numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
+    }
+
+    public String getCorreoElectronico() {
+        return correoElectronico;
+    }
+
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
 
     public String getContrasena() {
         return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
+    }    public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getRol() {
+        return rol;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 
     public Boolean getHabilitado() {
@@ -86,5 +152,39 @@ public class UsuariosModels {
     public void setRoles(Set<RolesModels> roles) {
         this.roles = roles;
     }
-    
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }    // Métodos de compatibilidad para mantener el código existente
+    public String getNombreCompleto() {
+        return (nombre != null ? nombre : "") + " " + (apellidos != null ? apellidos : "");
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        if (nombreCompleto != null && !nombreCompleto.trim().isEmpty()) {
+            String[] partes = nombreCompleto.trim().split(" ", 2);
+            this.nombre = partes[0];
+            this.apellidos = partes.length > 1 ? partes[1] : "";
+        }
+    }
+
+    public String getNombreUsuario() {
+        return correoElectronico;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.correoElectronico = nombreUsuario;
+    }
+
+    public String getCorreo() {
+        return correoElectronico;
+    }
+
+    public void setCorreo(String correo) {
+        this.correoElectronico = correo;
+    }
 }
