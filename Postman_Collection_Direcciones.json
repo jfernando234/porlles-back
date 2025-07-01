@@ -1,0 +1,306 @@
+{
+  "info": {
+    "name": "API Direcciones - Porlles",
+    "description": "Colección para probar la API de direcciones de usuarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "direccionId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "0. Registrar Usuario de Prueba",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Usuario registrado exitosamente', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('token');",
+                  "    pm.expect(jsonData).to.have.property('correoElectronico');",
+                  "    ",
+                  "    // Guardar token automáticamente",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    pm.collectionVariables.set('userId', jsonData.id);",
+                  "    ",
+                  "    console.log('Usuario registrado con email:', jsonData.correoElectronico);",
+                  "    console.log('Token guardado automáticamente');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"correoElectronico\": \"juan.perez@prueba.com\",\n  \"tipoDocumento\": \"DNI\",\n  \"numeroDocumento\": \"12345678\",\n  \"celular\": \"987654321\",\n  \"contrasena\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/registrar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "registrar"]
+            }
+          }
+        },
+        {
+          "name": "1. Login - Obtener Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Respuesta contiene token', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('token');",
+                  "    ",
+                  "    // Guardar token en variable de colección",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    pm.collectionVariables.set('userId', jsonData.id);",
+                  "    ",
+                  "    console.log('Token guardado:', jsonData.token);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreUsuario\": \"juan.perez@prueba.com\",\n  \"contrasena\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Direcciones",
+      "item": [
+        {
+          "name": "2. Verificar si tiene direcciones",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Respuesta contiene tieneDirecciones', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('tieneDirecciones');",
+                  "    pm.expect(jsonData).to.have.property('cantidadDirecciones');",
+                  "    ",
+                  "    console.log('Tiene direcciones:', jsonData.tieneDirecciones);",
+                  "    console.log('Cantidad:', jsonData.cantidadDirecciones);",
+                  "    console.log('Mensaje:', jsonData.message);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direcciones/verificar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "direcciones", "verificar"]
+            }
+          }
+        },
+        {
+          "name": "3. Obtener dirección principal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Respuesta válida', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success');",
+                  "    pm.expect(jsonData).to.have.property('hasPrincipalAddress');",
+                  "    ",
+                  "    if (jsonData.hasPrincipalAddress) {",
+                  "        pm.expect(jsonData.data).to.have.property('id');",
+                  "        console.log('Dirección principal encontrada:', jsonData.data);",
+                  "    } else {",
+                  "        console.log('No tiene dirección principal:', jsonData.message);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direcciones/principal",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "direcciones", "principal"]
+            }
+          }
+        },
+        {
+          "name": "4. Obtener todas las direcciones",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Respuesta contiene array de direcciones', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success');",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "    pm.expect(jsonData.data).to.be.an('array');",
+                  "    ",
+                  "    console.log('Cantidad de direcciones:', jsonData.data.length);",
+                  "    console.log('Mensaje:', jsonData.message);",
+                  "    ",
+                  "    if (jsonData.data.length > 0) {",
+                  "        // Guardar ID de la primera dirección para pruebas posteriores",
+                  "        pm.collectionVariables.set('direccionId', jsonData.data[0].id);",
+                  "        console.log('ID de dirección guardado:', jsonData.data[0].id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/direcciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "direcciones"]
+            }
+          }
+        },
+        {
+          "name": "5. Crear nueva dirección",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Dirección creada exitosamente', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success', true);",
+                  "    pm.expect(jsonData.data).to.have.property('id');",
+                  "    ",
+                  "    // Guardar ID de la dirección creada",
+                  "    pm.collectionVariables.set('direccionId', jsonData.data.id);",
+                  "    ",
+                  "    console.log('Nueva dirección creada con ID:', jsonData.data.id);",
+                  "    console.log('Es principal:', jsonData.data.esPrincipal);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"direccion\": \"Dirección de prueba desde Postman\",\n  \"departamento\": \"Ancash\",\n  \"provincia\": \"Huaraz\",\n  \"distrito\": \"Colcabamba\",\n  \"avenidaCalleJiron\": \"Av. Prueba\",\n  \"numero\": \"123\",\n  \"codigoPostal\": \"02001\",\n  \"referencia\": \"Cerca del parque principal\",\n  \"esPrincipal\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/direcciones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "direcciones"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
@@ -57,7 +59,8 @@ public class UsuariosModels {    @Id
         joinColumns = @JoinColumn(name = "usuario_id"),
         inverseJoinColumns = @JoinColumn(name = "rol_id")
     )
-    private Set<RolesModels> roles = new HashSet<>();    @PrePersist
+    private Set<RolesModels> roles = new HashSet<>();    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DireccionesModels> direcciones = new HashSet<>();    @PrePersist
     protected void onCreate() {
         fechaRegistro = LocalDateTime.now();
         if (rol == null || rol.trim().isEmpty()) {
@@ -186,5 +189,13 @@ public class UsuariosModels {    @Id
 
     public void setCorreo(String correo) {
         this.correoElectronico = correo;
+    }
+
+    public Set<DireccionesModels> getDirecciones() {
+        return direcciones;
+    }
+
+    public void setDirecciones(Set<DireccionesModels> direcciones) {
+        this.direcciones = direcciones;
     }
 }
