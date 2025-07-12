@@ -33,12 +33,6 @@ public class ProveedorModel {
     private String telefono;
 
     @Column
-    private int tiempoEntregaPromedio;
-
-    @Column
-    private String certificaciones;
-
-    @Column
     private String estado;
 
     public int getId() {
@@ -87,22 +81,6 @@ public class ProveedorModel {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public int getTiempoEntregaPromedio() {
-        return tiempoEntregaPromedio;
-    }
-
-    public void setTiempoEntregaPromedio(int tiempoEntregaPromedio) {
-        this.tiempoEntregaPromedio = tiempoEntregaPromedio;
-    }
-
-    public String getCertificaciones() {
-        return certificaciones;
-    }
-
-    public void setCertificaciones(String certificaciones) {
-        this.certificaciones = certificaciones;
     }
 
     public String getEstado() {
