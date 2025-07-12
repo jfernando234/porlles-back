@@ -22,9 +22,6 @@ public class ProductoModel {
     private String nombre;
 
     @Column
-    private String marca;
-
-    @Column
     private String especificaciones;
 
     @Column
@@ -34,7 +31,10 @@ public class ProductoModel {
     @JoinColumn
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProveedorModel ID_proveedor;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private MarcaModels Id_Marca;
     @Column
     private int stockMinimo;
     
@@ -67,14 +67,6 @@ public class ProductoModel {
         this.nombre = nombre;
     }
 
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
     public ProveedorModel getID_proveedor() {
         return ID_proveedor;
     }
@@ -82,7 +74,7 @@ public class ProductoModel {
     public void setID_proveedor(ProveedorModel iD_proveedor) {
         ID_proveedor = iD_proveedor;
     }
-
+    
     public double getPrecioUnitario() {
         return precioUnitario;
     }
@@ -113,5 +105,13 @@ public class ProductoModel {
 
     public void setEspecificaciones(String especificaciones) {
         this.especificaciones = especificaciones;
+    }
+
+    public MarcaModels getId_Marca() {
+        return Id_Marca;
+    }
+
+    public void setId_Marca(MarcaModels id_Marca) {
+        Id_Marca = id_Marca;
     }
 }

@@ -28,7 +28,7 @@ public class ProductoService {
     public ProductoModel actualizarProducto( ProductoModel productoActualizado,int id) {
         return productoRepository.findById(id).map(producto -> {
             producto.setNombre(productoActualizado.getNombre());
-            producto.setMarca(productoActualizado.getMarca());
+            producto.setId_Marca(productoActualizado.getId_Marca());
             producto.setEspecificaciones(productoActualizado.getEspecificaciones());
             producto.setPrecioUnitario(productoActualizado.getPrecioUnitario());
             producto.setProveedor(productoActualizado.getProveedor());
