@@ -31,7 +31,15 @@ public class ProductoControllers {
         return productoService.obtenerTodosProducto();
     }
 
-    @PostMapping ("/{id}")
+    @GetMapping("/{id}/imagen")
+        public ResponseEntity<byte[]> obtenerImagen(@PathVariable int id) {
+            byte[] imagen = productoService.obtenerImagenPorId(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG); // o IMAGE_PNG según el tipo real
+            return new ResponseEntity<>(imagen, headers, HttpStatus.OK);
+    }
+    
+    @GetMapping("/{id}")
     public Optional<ProductoModel> obtenerProductoPorId(@PathVariable int id) {
         return productoService.obtenerPorId(id);
     }
@@ -57,16 +65,5 @@ public class ProductoControllers {
     public void eliminarProducto(@PathVariable int id) {
         productoService.eliminarProducto(id);
     }
-    @GetMapping("/imagen/{id}")
-    public ResponseEntity<byte[]> obtenerImagenProducto(@PathVariable int id) {
-        Optional<ProductoModel> productoOpt = productoService.obtenerPorId(id);
-        if (productoOpt.isPresent() && productoOpt.get().getImagen() != null) {
-            byte[] imagen = productoOpt.get().getImagen();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG); // O IMAGE_PNG según corresponda
-            return new ResponseEntity<>(imagen, headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+    
 }

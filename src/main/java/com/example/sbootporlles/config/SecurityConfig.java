@@ -3,6 +3,7 @@ package com.example.sbootporlles.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,6 +40,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // Permite acceso a auth endpoints
+                .requestMatchers("/productos/**").permitAll()
+                .requestMatchers("/proveedores/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/productos/**").permitAll()
+                  // Permite acceso público a productos
                 .anyRequest().authenticated() // Requiere autenticación para todo lo demás
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
