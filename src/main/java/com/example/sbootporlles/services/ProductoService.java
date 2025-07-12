@@ -40,4 +40,14 @@ public class ProductoService {
     public void eliminarProducto(int id) {
         productoRepository.deleteById(id);
     }
+    public byte[] obtenerImagenPorId(int  id) {
+        ProductoModel producto = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        
+        if (producto.getImagen() == null) {
+            throw new RuntimeException("Producto no tiene imagen");
+        }
+
+        return producto.getImagen();
+    }
 }
