@@ -24,8 +24,6 @@ public class ProveedorService {
         e.setContacto(obj.getContacto());
         e.setCorreoElectronico(obj.getCorreoElectronico());
         e.setTelefono(obj.getTelefono());
-        e.setTiempoEntregaPromedio(obj.getTiempoEntregaPromedio());
-        e.setCertificaciones(obj.getCertificaciones());
         e.setEstado(obj.getEstado());
         return e;
     }
